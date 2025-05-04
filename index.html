@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tifa Spinner Wheel</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #111;
+      color: white;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    .spinner-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #wheel {
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      border: 10px solid crimson;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 0 20px crimson;
+    }
+    .segment {
+      position: absolute;
+      width: 50%;
+      height: 50%;
+      top: 50%;
+      left: 50%;
+      transform-origin: 0% 0%;
+      background: #222;
+      color: white;
+      font-size: 12px;
+      text-align: center;
+      line-height: 1;
+      padding-top: 30px;
+      box-sizing: border-box;
+    }
+    #spin {
+      margin-top: 20px;
+      padding: 10px 30px;
+      background: crimson;
+      border: none;
+      font-size: 18px;
+      cursor: pointer;
+      color: white;
+      border-radius: 8px;
+    }
+    #pointer {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid white;
+      position: absolute;
+      top: calc(50% - 200px);
+      left: calc(50% - 20px);
+      z-index: 10;
+    }
+    #result {
+      margin-top: 15px;
+      font-size: 24px;
+      color: crimson;
+    }
+    #tifa-img {
+      height: 400px;
+      margin-left: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <h1>Tifa's Lucky Spinner</h1>
+  <div class="spinner-container">
+    <div id="pointer"></div>
+    <div id="wheel"></div>
+    <img id="tifa-img" src="tifa.png" alt="Tifa Lockhart">
+  </div>
+  <button id="spin">Spin</button>
+  <div id="result"></div>
+
+  <script>
+    const wheel = document.getElementById('wheel');
+    const resultDiv = document.getElementById('result');
+    let angle = 0;
+    let spinning = false;
+
+    const SEGMENTS = 300;
+    const segmentAngle = 360 / SEGMENTS;
+
+    for (let i = 0; i < SEGMENTS; i++) {
+      const segment = document.createElement('div');
+      segment.classList.add('segment');
+      segment.style.transform = `rotate(${i * segmentAngle}deg) skewY(${90 - segmentAngle}deg)`;
+      segment.innerHTML = `<div style="transform: skewY(-${90 - segmentAngle}deg) rotate(${segmentAngle / 2}deg);">${i + 1}</div>`;
+      segment.style.backgroundColor = i % 2 === 0 ? '#111' : '#222';
+      wheel.appendChild(segment);
+    }
+
+    document.getElementById('spin').addEventListener('click', () => {
+      if (spinning) return;
+      spinning = true;
+      const spinTo = Math.floor(Math.random() * SEGMENTS);
+      const extraRotations = 5 * 360;
+      angle = -(spinTo * segmentAngle + extraRotations);
+      wheel.style.transition = 'transform 4s cubic-bezier(0.33, 1, 0.68, 1)';
+      wheel.style.transform = `rotate(${angle}deg)`;
+      setTimeout(() => {
+        spinning = false;
+        resultDiv.textContent = `Result: ${spinTo + 1}`;
+      }, 4200);
+    });
+  </script>
+</body>
+</html>
